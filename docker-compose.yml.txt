@@ -1,0 +1,54 @@
+version: '3.9'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: animate-pro-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - MODEL_DEVICE=cpu
+    volumes:
+      - ./backend:/app
+    networks:
+      - animate-network
+    depends_on:
+      - cache
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: animate-pro-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - animate-network
+    depends_on:
+      - backend
+
+  cache:
+    image: redis:7-alpine
+    container_name: animate-pro-cache
+    ports:
+      - "6379:6379"
+    volumes:
+      - cache-data:/data
+    networks:
+      - animate-network
+
+volumes:
+  cache-data:
+
+networks:
+  animate-network:
+    driver: bridge

@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.env
+.env.local
+venv/
+node_modules/
+.next/
+.DS_Store
+*.log
+storage/models/*
+!storage/models/.gitkeep
